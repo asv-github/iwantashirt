@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<title>BiggerPackage4U Shirts for Very Low Ruble!</title>
+<style type="text/css">
+div.formfield {
+	background-color: #FFFFCC;
+	display: inline-block;
+	width: 80%;
+	padding: 1em;
+	margin: .5em;
+	border-radius: .5em;
+}
+</style>
+</head>
+<body>
+<center>
+<h2>BP4U T-Shirt Interest Form</h2>
+<a href="shirtfront.png"><img src="shirtfront.png" width=100 alt="BiggerPackage4U T-Shirt"></a>
+<br>
+<div style="display: inline-block; width: 90%;">
+<small>
+Want a shirt? Fill out the form! This is non-binding&mdash;you can fill out the form and change your mind later.
+The idea is to estimate how large a bulk order should be placed.
+Price per shirt is TBD but should be around $10. You'll get an email when the price is known.
+</small>
+</div>
+<hr>
+<form method="post" action="http://localhost:8080/">
+<div class="formfield">
+How many shirts are you interested in buying?<br>
+<select name="numshirts" style="max-width:90%">
+<option selected>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+</select>
+</div><br>
+
+<div class="formfield">
+What is your email address?<br>
+<input type="text" name="email" style="max-width:90%"> <br>
+<small>You'll get an email when the exact shirt price is known.</small>
+</div><br>
+
+<div class="formfield">
+Here, have a text box:<br>
+<textarea cols=32 rows=5 style="max-width:90%">
+Feel free to type here, but it doesn't actually get sent anywhere.
+</textarea>
+</div><br>
+
+<div class="formfield" style="background-color: #DDFFDD">
+<input type="submit" value="Submit!">
+</div>
+</form>
+</center>
+</body>
+</html>
