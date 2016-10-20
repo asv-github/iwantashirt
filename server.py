@@ -4,23 +4,44 @@ from subprocess import call
 import table
 
 class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
-	def reply(self,string):
-		self.wfile.write(string.encode('utf-8'))
+	server_version = "HTTP4U/0.5"
+	sys_version = ""
 
+	def _reply(self,string):
+		"""Convenience method for sending a string to the client (encoded in UTF-8)"""
+		self.wfile.write(string.encode('utf-8'))
 	def serve_static_page(self, page, status=200):
-		self.send_response_only(status)
+		"""Serve a static HTML page passed in as a string."""
+		self.send_response(status)
 		self.send_header("Content-Type","text/html; charset=utf-8")
 		self.end_headers()
-		self.reply(page)
+		self._reply(page)
+	def serve_file(self, filename, content_type="application/octet-stream", status=200):
+		"""Serve the contents of a given file, using a given Content-Type."""
+		with open(filename,'rb') as f:
+			self.send_response(status)
+			self.send_header("Content-Type",content_type)
+			self.end_headers()
+			self.wfile.write(f.read())
+			self.wfile.flush()
+
 	def serve_fuckup_page(self, errormessage, status=400):
+		"""Convenience method for serving a page telling the user they fucked up somehow"""
 		page = "<!doctype html><html><head><title>You're a fuckup</title></head><body>%s</body></html>\n" % errormessage
-		self.send_response_only(status)
-		self.send_header("Content-Type","text/html; charset=utf-8")
-		self.end_headers()
-		self.reply(page)
+		self.serve_static_page(page, status=status)
+
+	# =======================
 
 	def do_GET(self):
-		self.serve_static_page("<!doctype html><html><head><title>That was a GET request</title></head><body>Congrats, you sent a GET request! But you probably wanted to send a POST request.</body></html>\n", status=405)
+		"""
+		This method gets called whenever a client makes a GET request. Serve the form page, or an image, or a 404 error, depending on the requested URL.
+		"""
+		if (self.path == "/"):
+			self.serve_file("form.html", content_type="text/html; charset=utf-8")
+		elif (self.path == "/shirtfront.png"):
+			self.serve_file("shirtfront.png", content_type="image/png")
+		else:
+			self.serve_fuckup_page("<h1>404 Not Found</h1>Somebody fucked up, and it's probably you.", status=404)
 
 	def do_POST(self):
 		form = cgi.FieldStorage(fp=self.rfile,headers=self.headers,environ={'REQUEST_METHOD': 'POST'})
