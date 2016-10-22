@@ -7,6 +7,7 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 	server_version = "HTTP4U/0.5"
 	sys_version = ""
 
+	# ====================== Convenience methods ======================
 	def _reply(self,string):
 		"""Convenience method for sending a string to the client (encoded in UTF-8)"""
 		self.wfile.write(string.encode('utf-8'))
@@ -30,7 +31,7 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		page = "<!doctype html><html><head><title>You're a fuckup</title></head><body>%s</body></html>\n" % errormessage
 		self.serve_static_page(page, status=status)
 
-	# =======================
+	# ======================= Request handlers ======================
 
 	def do_GET(self):
 		"""
@@ -44,10 +45,14 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 			self.serve_fuckup_page("<h1>404 Not Found</h1>Somebody fucked up, and it's probably you.", status=404)
 
 	def do_POST(self):
+		"""
+		This method gets called whenever a client makes a POST request. We only have one form, so we'll just ass
+		"""
+		# The site only has one form, so we'll just assume that's what the user is submitting.
 		form = cgi.FieldStorage(fp=self.rfile,headers=self.headers,environ={'REQUEST_METHOD': 'POST'})
 		email = form.getvalue('email')
 		numshirts = form.getvalue('numshirts')
-		# Like I said, the text area isn't even recorded
+		# Like it says in form.html, the text area isn't even recorded
 		if not (email and numshirts):
 			self.serve_fuckup_page("I need both a number of shirts (for obvious reasons) and an email address (to contact you when the exact price of the shirts is known).")
 			return
