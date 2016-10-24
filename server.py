@@ -4,8 +4,6 @@ from subprocess import call
 import table
 
 class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
-	server_version = "HTTP4U/0.5"
-	sys_version = ""
 
 	# ====================== Convenience methods ======================
 	def _reply(self,string):
@@ -13,18 +11,10 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		self.wfile.write(string.encode('utf-8'))
 	def serve_static_page(self, page, status=200):
 		"""Serve a static HTML page passed in as a string."""
-		self.send_response(status)
+		self.send_response_only(status)
 		self.send_header("Content-Type","text/html; charset=utf-8")
 		self.end_headers()
 		self._reply(page)
-	def serve_file(self, filename, content_type="application/octet-stream", status=200):
-		"""Serve the contents of a given file, using a given Content-Type."""
-		with open(filename,'rb') as f:
-			self.send_response(status)
-			self.send_header("Content-Type",content_type)
-			self.end_headers()
-			self.wfile.write(f.read())
-			self.wfile.flush()
 
 	def serve_fuckup_page(self, errormessage, status=400):
 		"""Convenience method for serving a page telling the user they fucked up somehow"""
@@ -34,19 +24,12 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 	# ======================= Request handlers ======================
 
 	def do_GET(self):
-		"""
-		This method gets called whenever a client makes a GET request. Serve the form page, or an image, or a 404 error, depending on the requested URL.
-		"""
-		if (self.path == "/"):
-			self.serve_file("form.html", content_type="text/html; charset=utf-8")
-		elif (self.path == "/shirtfront.png"):
-			self.serve_file("shirtfront.png", content_type="image/png")
-		else:
-			self.serve_fuckup_page("<h1>404 Not Found</h1>Somebody fucked up, and it's probably you.", status=404)
+		self.serve_fuckup_page("Congrats, you sent a GET request. But you should have sent a POST request.", status=405)
 
 	def do_POST(self):
 		"""
-		This method gets called whenever a client makes a POST request. We only have one form, so we'll just ass
+		This method gets called whenever a client makes a POST request.
+		We only have one form, so we'll just assume that's what's beging submitted.
 		"""
 		# The site only has one form, so we'll just assume that's what the user is submitting.
 		form = cgi.FieldStorage(fp=self.rfile,headers=self.headers,environ={'REQUEST_METHOD': 'POST'})
@@ -76,7 +59,7 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		else:
 			# OK, things are probably fine now.
 			table.append("{email},{numshirts},{timestamp}\n".format(email=email, numshirts=numshirts, timestamp=int(time.time())))
-			self.serve_static_page("<!doctype html><html><head><title>Success!</title></head><body>Awesome! You'll get an email with more details once the exact price of shirts is known.</body></html>\n")
+			self.serve_static_page("<!doctype html><html><head><title>Success!</title></head><body>Awesome! You'll get an email with more details once the exact price of shirts is known.<br>While you're waiting, why not <a href=\"https://bp4u.ru/\">do us a click!</a></body></html>\n")
 			
 
 if __name__ == "__main__":
