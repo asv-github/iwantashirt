@@ -1,4 +1,5 @@
 import http.server, cgi
+import re
 import time
 from subprocess import call
 import table
@@ -53,7 +54,7 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		elif len(email) > 128:
 			self.serve_fuckup_page("Your email address is too long. If you just want to practice typing that's what the text area is for.")
 			return
-		elif (" " in email) or ("," in email) or ("\"" in email) or ("\n" in email):
+		elif not re.match("^[a-zA-Z0-9._+@\-]+$", email):
 			self.serve_fuckup_page("Your \"email address\" has some funky characters in it. Try again.")
 			return
 		else:
