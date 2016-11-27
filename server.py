@@ -22,6 +22,25 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		page = "<!doctype html><html><head><title>You're a fuckup</title></head><body>%s</body></html>\n" % errormessage
 		self.serve_static_page(page, status=status)
 
+	def validate_shirt_count(self, numshirts, size):
+		"""
+		Take in a string numshirts (a form value) and make sure its a reasonable number of shirts. "size" is the shirt size, used in the error message.
+		Returns True if a reasonable number of shirts was ordered; otherwise serve an error message and return False.
+		"""
+		if not numshirts:
+			self.serve_fuckup_page("You didn't tell me how many %s shirts you want to buy." % size)
+			return False
+		try:
+			numshirts = int(numshirts)
+			if numshirts < 0: raise ValueError()
+		except ValueError:
+			self.serve_fuckup_page("You must order a nonnegative integer number of %s shirts. (Hint: 0 means you don't want any.)" % size)
+			return False
+		if numshirts > 5:
+			self.serve_fuckup_page("If you're <i>actually</i> interested in that many %s shirts, send me an email. Otherwise, fuck you, enter a reasonable number." % size)
+			return False
+		return True
+
 	# ======================= Request handlers ======================
 
 	def do_GET(self):
@@ -37,19 +56,9 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		email = form.getvalue('email')
 		numshirts = form.getvalue('numshirts')
 		# Like it says in form.html, the text area isn't even recorded
-		if not (email and numshirts):
-			self.serve_fuckup_page("I need both a number of shirts (for obvious reasons) and an email address (to contact you when the exact price of the shirts is known).")
-			return
-		try:
-			numshirts = int(numshirts)
-		except ValueError:
-			self.serve_fuckup_page("\"Number of Shirts\" is supposed to be a positive integer, in case that wasn't obvious.")
-			return
-		if numshirts <= 0:
-			self.serve_fuckup_page("\"Number of Shirts\" is supposed to be a positive integer, in case that wasn't obvious.")
-			return
-		elif numshirts > 20:
-			self.serve_fuckup_page("If you're <i>actually</i> interested in that many shirts, send me an email. Otherwise, fuck you, enter a reasonable number.")
+
+		if not email:
+			self.serve_fuckup_page("I need your email address so I can track you down when your shirt arrives.")
 			return
 		elif len(email) > 128:
 			self.serve_fuckup_page("Your email address is too long. If you just want to practice typing that's what the text area is for.")
@@ -57,10 +66,18 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 		elif not re.match("^[a-zA-Z0-9._+@\-]+$", email):
 			self.serve_fuckup_page("Your \"email address\" has some funky characters in it. Try again.")
 			return
+		if not all(self.validate_shirt_count(form.getvalue(size),size) for size in ["S","M","L","XL","XXL"]): # Tricky thing here: this is a generator and not a list, so all() shortcuts out after the first error. (This way you only send one error message instead of all of them.)
+			# validate_shirt_count serves the appropriate fuckup page
+			return
+		# OK, things are probably fine now.
+		shirts = {size: int(form.getvalue(size)) for size in ["S","M","L","XL","XXL"]}
+		# One last check: Did you order any shirts?
+		if not any(shirts.values()):
+			self.serve_fuckup_page("You want to buy 0 shirts total? Done.")
+			return
 		else:
-			# OK, things are probably fine now.
-			table.append("{email},{numshirts},{timestamp}\n".format(email=email, numshirts=numshirts, timestamp=int(time.time())))
-			self.serve_static_page("<!doctype html><html><head><title>Success!</title></head><body>Awesome! You'll get an email with more details once the exact price of shirts is known.<br>While you're waiting, why not <a href=\"https://bp4u.ru/\">do us a click!</a></body></html>\n")
+			table.append("{email},{shirts[S]},{shirts[M]},{shirts[L]},{shirts[XL]},{shirts[XXL]},{timestamp}\n".format(email=email,shirts=shirts,timestamp=int(time.time())))
+			self.serve_static_page("<!doctype html><html><head><title>Success!</title></head><body>Awesome! You'll get an email once shirts arrive.<br>While you're waiting, why not <a href=\"https://bp4u.ru/\">do us a click!</a></body></html>\n")
 			
 
 if __name__ == "__main__":

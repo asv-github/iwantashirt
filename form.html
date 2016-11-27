@@ -11,49 +11,106 @@ div.formfield {
 	margin: .5em;
 	border-radius: .5em;
 }
+tr:nth-child(even) {
+	background-color: #FFFFCC;
+}
+tr:nth-child(odd) {
+	background-color: #FFDDAA;
+}
 </style>
 </head>
 <body>
 <center>
-<h2>BP4U T-Shirt Interest Form</h2>
+<h2>BP4U T-Shirt Order Form</h2>
 <a href="shirtfront.png"><img src="shirtfront.png" width=100 alt="BiggerPackage4U T-Shirt Front"></a>
 <a href="shirtback.png"><img src="shirtback.png" width=100 alt="BiggerPackage4U T-Shirt Back"></a>
 <br>
+<h4>This holiday season give your loved ones the gift of a bigger package with BiggerPackage4U.ru T-shirts!</h4>
 <div style="display: inline-block; width: 90%;">
 <small>
-Want a shirt? Fill out the form! This is non-binding&mdash;you can fill out the form and change your mind later.
-The idea is to estimate how large a bulk order should be placed.
-Price per shirt is TBD but should be around $10 (&approx;620 ruble). You'll get an email when the price is known.
+Want a shirt? Fill out the form!
+Price is <b>9 USD</b>, payable in cash, Bitcoin, or Zcash. (No PayPal, Venmo, Facebook Credits, etc.)
+Pickup will be at EC. If you do not live in Boston shoot me an email and we can work something out &mdash; you'll probably end up paying extra for shipping.
 </small>
 </div>
 <hr>
 <form method="post" action="submit">
 <div class="formfield">
-How many shirts are you interested in buying?<br>
-<select name="numshirts" style="max-width:90%">
-<option selected>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5</option>
-<option>6</option>
-<option>7</option>
-<option>8</option>
-<option>9</option>
-<option>10</option>
-</select>
+How many shirts do you want in the following sizes?<br>
+<table>
+<tr>
+	<th>Size</th><th>Count</th>
+</tr>
+<tr>
+	<td align="right">S</td>
+	<td align="left"><select name="S">
+		<option selected>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select></td>
+</tr>
+<tr>
+	<td align="right">M</td>
+	<td align="left"><select name="M">
+		<option selected>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select></td>
+</tr>
+<tr>
+	<td align="right">L</td>
+	<td align="left"><select name="L">
+		<option selected>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select></td>
+</tr>
+<tr>
+	<td align="right">XL</td>
+	<td align="left"><select name="XL">
+		<option selected>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select></td>
+</tr>
+<tr>
+	<td align="right">XXL<sup>*</sup></td>
+	<td align="left"><select name="XXL">
+		<option selected>0</option>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select></td>
+</tr>
+</table>
+<br>
+<small><sup>*</sup>$1 extra</small>
 </div><br>
 
 <div class="formfield">
 What is your email address?<br>
 <input type="text" name="email" style="max-width:90%"> <br>
-<small>You'll get an email when the exact shirt price is known.</small>
+<small>This way I can track you down when the shirts arrive.</small>
 </div><br>
 
 <div class="formfield">
 Here, have a text box:<br>
-<textarea cols=32 rows=5 style="max-width:90%">
-Feel free to type here, but it doesn't actually get sent anywhere.
+<textarea cols=40 rows=5 style="max-width:90%">
+Feel free to type here, but it doesn't actually get sent anywhere. Shoot me an email if there's anything special about your order.
 </textarea>
 </div><br>
 

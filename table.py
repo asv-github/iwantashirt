@@ -1,6 +1,6 @@
 from fcntl import flock, LOCK_EX, LOCK_UN
 
-FILE = "preorders.csv"
+FILE = "orders.csv"
 def append(string):
 	with open(FILE, 'a') as f:
 		try:
