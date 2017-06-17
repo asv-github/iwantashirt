@@ -24,7 +24,7 @@ class IWantAShirtRequestHandler(http.server.BaseHTTPRequestHandler):
 
 	def validate_shirt_count(self, numshirts, size):
 		"""
-		Take in a string numshirts (a form value) and make sure its a reasonable number of shirts. "size" is the shirt size, used in the error message.
+		Take in a string numshirts (a form value) and make sure it's a reasonable number of shirts. "size" is the shirt size, used in the error message.
 		Returns True if a reasonable number of shirts was ordered; otherwise serve an error message and return False.
 		"""
 		if not numshirts:
